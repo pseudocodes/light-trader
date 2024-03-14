@@ -253,7 +253,8 @@ type Portfolio struct {
 
 	Holdings xsync.MapOf[string, *Position]
 
-	trader *Trader
+	trader  *Trader
+	posInit atomic.Bool
 	sync.Mutex
 }
 
@@ -295,6 +296,7 @@ func (p *Portfolio) UpdatePosi(f *thost.CThostFtdcInvestorPositionField) {
 	if f.PosiDirection == thost.THOST_FTDC_PD_Long {
 		if !bHasTdYdDistinct {
 			posi.VolumeLongYd = int(f.YdPosition)
+			posi.VolumeLongHis = int(f.Position - f.TodayPosition)
 		} else {
 			if f.PositionDate == thost.THOST_FTDC_PSD_History {
 				posi.VolumeLongYd = int(f.YdPosition)
@@ -320,6 +322,7 @@ func (p *Portfolio) UpdatePosi(f *thost.CThostFtdcInvestorPositionField) {
 	} else {
 		if !bHasTdYdDistinct {
 			posi.VolumeShortYd = int(f.YdPosition)
+			posi.VolumeShortHis = int(f.Position - f.TodayPosition)
 		} else {
 			if f.PositionDate == thost.THOST_FTDC_PSD_History {
 				posi.VolumeShortYd = int(f.YdPosition)
