@@ -1,4 +1,4 @@
-module github.com/pseudocodes/lite-ctp-trader
+module github.com/pseudocodes/light-trader
 
 go 1.21.0
 
